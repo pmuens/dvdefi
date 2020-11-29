@@ -9,7 +9,8 @@
     "selfie": "npm run compile && npx mocha --timeout 5000 --exit test/selfie/selfie.challenge.js",
     "compromised": "npm run compile && npx mocha --timeout 5000 --exit test/compromised/compromised.challenge.js",
     "puppet": "npm run compile && npx mocha --timeout 5000 --exit test/puppet/puppet.challenge.js",
-    "compile": "npx buidler compile"
+    "compile": "npx buidler compile",
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "dependencies": {
@@ -18,5 +19,11 @@
     "@openzeppelin/test-environment": "0.1.3",
     "@openzeppelin/test-helpers": "0.5.5",
     "mocha": "7.1.1"
+  },
+  "devDependencies": {
+    "prettier": "^2.2.1",
+    "prettier-plugin-solidity": "^1.0.0-beta.1",
+    "solhint": "^3.3.2",
+    "solhint-plugin-prettier": "0.0.5"
   }
 }

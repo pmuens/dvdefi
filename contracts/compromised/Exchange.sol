@@ -8,7 +8,6 @@ import "./TrustfulOracle.sol";
 import "./DamnValuableNFT.sol";
 
 contract Exchange is ReentrancyGuard {
-
     using SafeMath for uint256;
     using Address for address payable;
 
@@ -29,26 +28,38 @@ contract Exchange is ReentrancyGuard {
 
         // Price should be in [wei / NFT]
         uint256 currentPriceInWei = oracle.getMedianPrice(token.symbol());
-        require(amountPaidInWei >= currentPriceInWei, "Amount paid is not enough");
+        require(
+            amountPaidInWei >= currentPriceInWei,
+            "Amount paid is not enough"
+        );
 
         uint256 tokenId = token.mint(msg.sender);
-        
+
         msg.sender.sendValue(amountPaidInWei - currentPriceInWei);
 
         emit TokenBought(msg.sender, tokenId, currentPriceInWei);
     }
 
     function sellOne(uint256 tokenId) external nonReentrant {
-        require(msg.sender == token.ownerOf(tokenId), "Seller must be the owner");
-        require(token.getApproved(tokenId) == address(this), "Seller must have approved transfer");
+        require(
+            msg.sender == token.ownerOf(tokenId),
+            "Seller must be the owner"
+        );
+        require(
+            token.getApproved(tokenId) == address(this),
+            "Seller must have approved transfer"
+        );
 
         // Price should be in [wei / NFT]
         uint256 currentPriceInWei = oracle.getMedianPrice(token.symbol());
-        require(address(this).balance >= currentPriceInWei, "Not enough ETH in balance");
+        require(
+            address(this).balance >= currentPriceInWei,
+            "Not enough ETH in balance"
+        );
 
         token.transferFrom(msg.sender, address(this), tokenId);
         token.burn(tokenId);
-        
+
         msg.sender.sendValue(currentPriceInWei);
 
         emit TokenSold(msg.sender, tokenId, currentPriceInWei);

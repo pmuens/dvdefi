@@ -8,7 +8,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * with snapshotting capabilities
  */
 contract AccountingToken is ERC20Snapshot, AccessControl {
-
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     bytes32 public constant SNAPSHOT_ROLE = keccak256("SNAPSHOT_ROLE");
     bytes32 public constant BURNER_ROLE = keccak256("BURNER_ROLE");
@@ -36,12 +35,20 @@ contract AccountingToken is ERC20Snapshot, AccessControl {
     }
 
     // Do not need transfer of this token
-    function _transfer(address, address, uint256) internal override {
+    function _transfer(
+        address,
+        address,
+        uint256
+    ) internal override {
         revert("Not implemented");
     }
 
     // Do not need allowance of this token
-    function _approve(address, address, uint256) internal override {
+    function _approve(
+        address,
+        address,
+        uint256
+    ) internal override {
         revert("Not implemented");
     }
 }

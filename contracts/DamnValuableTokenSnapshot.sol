@@ -3,10 +3,12 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/ERC20Snapshot.sol";
 
 contract DamnValuableTokenSnapshot is ERC20Snapshot {
-    
     uint256 private lastSnapshotId;
 
-    constructor(uint256 initialSupply) public ERC20("DamnValuableToken", "DVT") {
+    constructor(uint256 initialSupply)
+        public
+        ERC20("DamnValuableToken", "DVT")
+    {
         _mint(msg.sender, initialSupply);
     }
 
@@ -15,7 +17,11 @@ contract DamnValuableTokenSnapshot is ERC20Snapshot {
         return lastSnapshotId;
     }
 
-    function getBalanceAtLastSnapshot(address account) external view returns (uint256) {
+    function getBalanceAtLastSnapshot(address account)
+        external
+        view
+        returns (uint256)
+    {
         return balanceOfAt(account, lastSnapshotId);
     }
 

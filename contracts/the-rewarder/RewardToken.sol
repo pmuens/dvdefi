@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
  * @notice A mintable ERC20 token to issue rewards
  */
 contract RewardToken is ERC20, AccessControl {
-
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     constructor() public ERC20("Reward Token", "RWT") {

